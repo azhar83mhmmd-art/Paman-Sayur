@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produk - MiniSayur Market</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/produk.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4caf50"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>MiniSayur</span>
+    </a>
+    <div class="nav-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-input" placeholder="Cari sayur, ikan, makanan...">
+    </div>
+    <div class="nav-right">
+      <button class="icon-btn" id="dark-toggle" onclick="DarkMode.toggle()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <a href="checkout.html" class="icon-btn" title="Keranjang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61l1.64-8.39H4"/></svg>
+        <span class="cart-badge" style="display:none">0</span>
+      </a>
+      <div id="user-section"></div>
+    </div>
+    <button class="nav-toggle" onclick="document.getElementById('mobile-nav').classList.toggle('open')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html" class="mobile-nav-item">Beranda</a>
+    <a href="produk.html" class="mobile-nav-item active">Produk</a>
+    <a href="pesanan.html" class="mobile-nav-item">Pesanan Saya</a>
+    <a href="checkout.html" class="mobile-nav-item">Keranjang</a>
+  </div>
+</nav>
+
+<main class="produk-main">
+  <div class="container">
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-head">
+        <h1 class="page-title">Semua Produk</h1>
+        <span class="produk-count" id="produk-count">Memuat...</span>
+      </div>
+      <div class="kategori-chips" id="kategori-list">
+        <button class="chip-kategori active" data-kategori="semua">Semua</button>
+      </div>
+    </div>
+
+    <!-- PRODUK GRID -->
+    <div class="produk-grid" id="produk-grid">
+      <!-- Skeleton will be inserted here -->
+    </div>
+  </div>
+</main>
+
+<!-- FLOATING CART -->
+<div class="floating-cart" id="floating-cart" style="display:none">
+  <a href="checkout.html" class="float-cart-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61l1.64-8.39H4"/></svg>
+    Lihat Keranjang
+    <span class="float-cart-count">0</span>
+  </a>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>&copy; 2025 MiniSayur Market</p>
+      <a href="https://wa.me/6285332489867" target="_blank">+62 853-3248-9867</a>
+    </div>
+  </div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/produk.js"></script>
+<script src="js/realtime.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    await Produk.init();
+
+    // Check URL params
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    const kat = params.get('kat');
+    if (q) {
+      document.getElementById('search-input').value = q;
+      Produk.searchQuery = q.toLowerCase();
+      Produk.applyFilter();
+    }
+    if (kat) {
+      Produk.activeKategori = kat;
+      Produk.applyFilter();
+    }
+
+    // Update count display
+    const countEl = document.getElementById('produk-count');
+    const updateCount = () => {
+      if (countEl) countEl.textContent = `${Produk.filtered.length} produk`;
+    };
+    const origRender = Produk.render.bind(Produk);
+    Produk.render = function() { origRender(); updateCount(); updateFloatingCart(); };
+    updateCount();
+
+    // Realtime
+    Realtime.subscribeProducts((payload) => {
+      if (payload.eventType === 'UPDATE') Produk.updateCard(payload.new);
+      else if (payload.eventType === 'DELETE') Produk.removeCard(payload.old.id);
+      else if (payload.eventType === 'INSERT') Produk.load();
+    });
+  });
+
+  function updateFloatingCart() {
+    const fc = document.getElementById('floating-cart');
+    const count = Cart.getCount();
+    if (fc) fc.style.display = count > 0 ? 'block' : 'none';
+    const badge = document.querySelector('.float-cart-count');
+    if (badge) badge.textContent = count;
+  }
+
+  // Update floating cart on cart changes
+  const origSave = Cart.save.bind(Cart);
+  Cart.save = function() { origSave(); updateFloatingCart(); };
+</script>
+</body>
+</html>

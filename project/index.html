@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniSayur Market - Belanja Sayur Segar Online</title>
+  <meta name="description" content="Marketplace sayur segar dan kebutuhan dapur berkualitas, langsung dari petani.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2z" fill="#4caf50" stroke="none"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M6 12s1-4 6-4 6 4 6 4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Paman Sayur</span>
+    </a>
+
+    <div class="nav-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search-home" placeholder="Cari sayur, ikan, makanan..." oninput="handleHomeSearch(event)">
+    </div>
+
+    <div class="nav-right">
+      <button class="icon-btn" id="dark-toggle" onclick="DarkMode.toggle()" title="Mode Gelap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <a href="produk.html" class="icon-btn cart-btn" title="Keranjang">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-badge" style="display:none">0</span>
+      </a>
+      <a href="checkout.html" class="icon-btn" title="Keranjang Belanja">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61l1.64-8.39H4"/></svg>
+        <span class="cart-badge" id="cart-count-nav" style="display:none">0</span>
+      </a>
+      <div id="user-section"></div>
+    </div>
+
+    <button class="nav-toggle" id="nav-toggle" onclick="toggleMobileNav()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html" class="mobile-nav-item active">Beranda</a>
+    <a href="produk.html" class="mobile-nav-item">Produk</a>
+    <a href="pesanan.html" class="mobile-nav-item">Pesanan Saya</a>
+    <a href="checkout.html" class="mobile-nav-item">Keranjang</a>
+    <div id="mobile-user-section" class="mobile-user"></div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+  <!-- HERO / BANNER -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Segar Setiap Hari
+      </div>
+      <h1>Sayur Segar<br>Langsung ke Pintu Anda</h1>
+      <p>Temukan sayur segar, ikan pilihan, dan makanan kebutuhan harian berkualitas tinggi. Pesan sekarang, antar hari ini.</p>
+      <div class="hero-actions">
+        <a href="produk.html" class="btn-hero-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          Belanja Sekarang
+        </a>
+        <a href="#featured" class="btn-hero-outline">Lihat Produk</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <strong id="total-produk-count">50+</strong>
+          <span>Produk</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>COD</strong>
+          <span>Bayar di Tempat</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>Segar</strong>
+          <span>Setiap Hari</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-circle">
+        <svg width="220" height="220" viewBox="0 0 220 220" fill="none">
+          <circle cx="110" cy="110" r="100" fill="#e8f5e9" opacity="0.6"/>
+          <circle cx="110" cy="110" r="70" fill="#c8e6c9" opacity="0.5"/>
+          <!-- Veggies illustration -->
+          <ellipse cx="90" cy="120" rx="30" ry="15" fill="#66bb6a" opacity="0.9"/>
+          <ellipse cx="90" cy="115" rx="25" ry="12" fill="#81c784"/>
+          <rect x="85" y="90" width="5" height="30" rx="2" fill="#4caf50"/>
+          <ellipse cx="110" cy="140" rx="20" ry="10" fill="#ef9a9a" opacity="0.9"/>
+          <ellipse cx="110" cy="136" rx="17" ry="8" fill="#ef5350"/>
+          <rect x="108" y="120" width="4" height="18" rx="2" fill="#4caf50"/>
+          <ellipse cx="135" cy="115" rx="18" ry="22" fill="#ffe082" opacity="0.9"/>
+          <ellipse cx="135" cy="110" rx="14" ry="18" fill="#ffd54f"/>
+          <!-- leaves -->
+          <path d="M80 85 Q70 65 90 70 Q75 80 80 85Z" fill="#4caf50" opacity="0.8"/>
+          <path d="M145 100 Q165 85 155 105 Q148 98 145 100Z" fill="#4caf50" opacity="0.7"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- KATEGORI -->
+  <section class="section-kategori">
+    <div class="container">
+      <h2 class="section-title">Kategori Produk</h2>
+      <div class="kategori-grid" id="home-kategori">
+        <a href="produk.html?kat=Sayur" class="kat-card">
+          <div class="kat-icon green">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V12M12 12C12 12 7 8 7 5a5 5 0 0110 0c0 3-5 7-5 7z"/><path d="M7 12c-2 1-4 3-4 6h18c0-3-2-5-4-6"/></svg>
+          </div>
+          <span>Sayur</span>
+        </a>
+        <a href="produk.html?kat=Ikan" class="kat-card">
+          <div class="kat-icon blue">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c2-5 7-8 12-8 3 0 6 1.5 8 4-2 2.5-5 4-8 4-5 0-10-3-12 0z"/><circle cx="18" cy="10" r="1" fill="currentColor"/><path d="M22 12c-1 2-2 4-4 5"/></svg>
+          </div>
+          <span>Ikan</span>
+        </a>
+        <a href="produk.html?kat=Makanan" class="kat-card">
+          <div class="kat-icon orange">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          </div>
+          <span>Makanan</span>
+        </a>
+        <a href="produk.html" class="kat-card">
+          <div class="kat-icon gray">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+          </div>
+          <span>Semua</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUK UNGGULAN -->
+  <section class="section-produk" id="featured">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title">Produk Populer</h2>
+        <a href="produk.html" class="btn-lihat-semua">
+          Lihat Semua
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="produk-grid" id="home-produk-grid">
+        <!-- Skeleton loading -->
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton-body"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO COD BANNER -->
+  <section class="cod-banner">
+    <div class="container">
+      <div class="cod-grid">
+        <div class="cod-item">
+          <div class="cod-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <h3>Pengiriman Cepat</h3>
+          <p>Pesanan Anda diantar langsung ke lokasi dalam waktu singkat</p>
+        </div>
+        <div class="cod-item">
+          <div class="cod-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <h3>Bayar di Tempat (COD)</h3>
+          <p>Tidak perlu transfer. Bayar tunai saat barang tiba</p>
+        </div>
+        <div class="cod-item">
+          <div class="cod-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3>Produk Terjamin Segar</h3>
+          <p>Kualitas produk dipilih langsung sebelum pengiriman</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4caf50"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Paman Sayur
+        </div>
+        <p>Marketplace sayur segar, ikan, dan makanan berkualitas untuk keluarga Indonesia.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navigasi</h4>
+        <a href="index.html">Beranda</a>
+        <a href="produk.html">Produk</a>
+        <a href="pesanan.html">Pesanan Saya</a>
+      </div>
+      <div class="footer-contact">
+        <h4>Bantuan & Kontak</h4>
+        <p>Jika ada kendala hubungi:</p>
+        <a href="https://wa.me/6285332489867" class="wa-link" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 012 1.18 2 2 0 014 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>
+          +62 853-3248-9867
+        </a>
+        <p class="footer-note">Atau jika ingin menitip pesanan barang yang tidak ada di katalog, silakan chat ke nomor tersebut.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Paman Sayur. Hak cipta dilindungi.</p>
+      <a href="#" onclick="showKebijakan()">Kebijakan Layanan</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/produk.js"></script>
+<script src="js/realtime.js"></script>
+
+<script>
+  // Home page logic
+  async function loadHomeProduk() {
+    const { data } = await db.from('products')
+      .select('*')
+      .eq('is_active', true)
+      .order('terjual', { ascending: false })
+      .limit(8);
+    
+    const grid = document.getElementById('home-produk-grid');
+    if (!grid) return;
+    if (!data?.length) {
+      grid.innerHTML = '<div class="empty-state full"><p>Belum ada produk tersedia</p></div>';
+      return;
+    }
+    // Use Produk module to render
+    Produk.all = data;
+    Produk.filtered = data;
+    grid.innerHTML = data.map(p => Produk.cardHTML(p)).join('');
+
+    // Update count
+    const { count } = await db.from('products').select('id', { count: 'exact', head: true }).eq('is_active', true);
+    const countEl = document.getElementById('total-produk-count');
+    if (countEl) countEl.textContent = `${count || 0}+`;
+  }
+
+  function handleHomeSearch(e) {
+    const q = e.target.value.trim();
+    if (q.length > 1) {
+      window.location.href = `produk.html?q=${encodeURIComponent(q)}`;
+    }
+  }
+
+  function toggleMobileNav() {
+    document.getElementById('mobile-nav').classList.toggle('open');
+  }
+
+  function showKebijakan() {
+    window.open('kebijakan.html', '_blank');
+  }
+
+  // Realtime stok update on homepage
+  document.addEventListener('DOMContentLoaded', () => {
+    loadHomeProduk();
+    Realtime.subscribeProducts((payload) => {
+      if (payload.eventType === 'UPDATE') {
+        Produk.updateCard(payload.new);
+      } else if (payload.eventType === 'DELETE') {
+        Produk.removeCard(payload.old.id);
+      } else if (payload.eventType === 'INSERT') {
+        loadHomeProduk();
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
