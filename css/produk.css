@@ -1,0 +1,30 @@
+/* ============================================================
+   PRODUK.CSS - Product listing page specific styles
+   ============================================================ */
+
+/* Override card image for product page to be square */
+.produk-main .card-img-wrap {
+  aspect-ratio: 1 / 1;
+}
+
+/* Wider grid on product page */
+.produk-main .produk-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding-bottom: 80px;
+}
+
+/* Floating cart button bottom spacing on mobile */
+@media (max-width: 768px) {
+  .produk-main .produk-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .produk-main .produk-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}

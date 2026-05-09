@@ -63,6 +63,9 @@ body.dark {
 /* ---- RESET ---- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Critical: prevent flex/grid children from overflowing */
+*:not(html):not(body) { min-width: 0; }
+
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
@@ -356,24 +359,19 @@ input, textarea, select {
   background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 50%, #dcedc8 100%);
   padding: 80px 20px;
   overflow: hidden;
-  position: relative;
 }
 
 body.dark .hero {
   background: linear-gradient(135deg, #0d1f0e 0%, #122014 50%, #1a2d1a 100%);
 }
 
-.hero .container,
-.hero > .container { max-width: 1280px; margin: 0 auto; }
-
-/* Hero is used differently - direct children */
-.hero {
+.hero-inner {
+  max-width: 1280px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 40px;
-  max-width: 1280px;
-  margin: 0 auto;
 }
 
 .hero-content { max-width: 560px; }
@@ -525,8 +523,13 @@ body.dark .hero h1 { color: #a5d6a7; }
 /* Kategori grid */
 .kategori-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.kategori-3 {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .kat-card {
@@ -598,19 +601,18 @@ body.dark .hero h1 { color: #a5d6a7; }
 .card-img-wrap {
   position: relative;
   width: 100%;
-  padding-top: 75%; /* 4:3 ratio */
+  aspect-ratio: 1 / 1;
   background: var(--bg-input);
   overflow: hidden;
   flex-shrink: 0;
 }
 
 .card-img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  display: block;
   transition: transform 0.3s ease;
 }
 
@@ -619,13 +621,15 @@ body.dark .hero h1 { color: #a5d6a7; }
 .badge-habis {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.45);
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.3px;
+  z-index: 1;
 }
 
 .btn-wishlist {
@@ -1968,3 +1972,83 @@ body.dark .pesanan-catatan { background: #2d2b1a; }
 
 /* ---- PRODUK MAIN ---- */
 .produk-main { padding-bottom: 80px; }
+
+/* ---- CHECKOUT ITEM (summary sidebar) ---- */
+.checkout-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.checkout-item:last-child { border-bottom: none; }
+
+.checkout-item-img {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  object-position: center;
+  flex-shrink: 0;
+  background: var(--bg-input);
+}
+
+.checkout-item-info { flex: 1; min-width: 0; }
+.checkout-item-nama {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.checkout-item-qty { font-size: 12px; color: var(--text-muted); }
+.checkout-item-sub {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---- SECTION WRAPPING FIX ---- */
+.section-kategori .container,
+.section-produk .container { max-width: 1280px; margin: 0 auto; }
+
+/* ---- USER SECTION on mobile ---- */
+@media (max-width: 480px) {
+  .user-avatar-btn { padding: 5px 8px; gap: 5px; }
+  .user-name-nav { display: none; }
+  .user-avatar-btn svg:last-child { display: none; }
+}
+
+/* ---- HERO BADGE dark mode ---- */
+body.dark .hero-badge { background: var(--primary-dark); }
+
+/* ---- PRODUK MAIN padding ---- */
+.produk-main { padding-bottom: 100px; min-height: calc(100vh - 64px); }
+
+/* ---- HERO SECTION PADDING FIX ---- */
+.section-kategori { padding: 48px 0; }
+.section-produk { padding: 0 0 60px; }
+
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-input); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ---- SELECTION ---- */
+::selection { background: rgba(76,175,80,0.2); }
+
+/* ---- FOCUS VISIBLE ---- */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---- PRINT ---- */
+@media print {
+  .navbar, .footer, .floating-cart, #toast-container { display: none !important; }
+  body { background: #fff; color: #000; }
+}
