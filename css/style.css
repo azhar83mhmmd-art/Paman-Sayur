@@ -2052,3 +2052,41 @@ body.dark .hero-badge { background: var(--primary-dark); }
   .navbar, .footer, .floating-cart, #toast-container { display: none !important; }
   body { background: #fff; color: #000; }
 }
+
+/* ---- WA BUTTON (admin pesanan) ---- */
+.btn-wa-order {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 4px 0 6px;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.btn-wa-order:hover { background: #1da851; }
+.btn-wa-order svg  { flex-shrink: 0; }
+
+.no-contact {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 4px 0 6px;
+}
+
+/* ---- PESANAN ITEM ICON (no image) ---- */
+.pesanan-item-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: var(--green-50);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
