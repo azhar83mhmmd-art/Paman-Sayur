@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin - MiniSayur Market</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar" id="admin-sidebar">
+  <div class="sidebar-logo">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4caf50"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>MiniSayur</span>
+    <button class="sidebar-close" onclick="toggleSidebar()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="admin-tab-btn active" data-tab="dashboard" onclick="Admin.showTab('dashboard'); closeSidebarMobile()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+    <button class="admin-tab-btn" data-tab="produk" onclick="Admin.showTab('produk'); Admin.loadProdukList(); closeSidebarMobile()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Produk
+    </button>
+    <button class="admin-tab-btn" data-tab="pesanan" onclick="Admin.showTab('pesanan'); Admin.loadPesanan(); closeSidebarMobile()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      Pesanan
+      <span class="notif-dot" id="pesanan-notif" style="display:none"></span>
+    </button>
+    <button class="admin-tab-btn" data-tab="pendapatan" onclick="Admin.showTab('pendapatan'); Admin.loadPendapatan(); closeSidebarMobile()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Pendapatan
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="index.html" class="sidebar-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Ke Toko
+    </a>
+    <button onclick="Auth.logout()" class="sidebar-logout">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Keluar
+    </button>
+  </div>
+</aside>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- MAIN ADMIN CONTENT -->
+<div class="admin-main">
+  <!-- TOP BAR -->
+  <header class="admin-topbar">
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="dark-toggle" onclick="DarkMode.toggle()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <div id="user-section"></div>
+    </div>
+  </header>
+
+  <!-- SECTIONS -->
+  <div class="admin-content">
+
+    <!-- DASHBOARD -->
+    <section class="admin-section active" id="section-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Produk</span>
+            <span class="stat-value" id="stat-produk">-</span>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Pesanan</span>
+            <span class="stat-value" id="stat-pesanan">-</span>
+          </div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Pendapatan</span>
+            <span class="stat-value small" id="stat-pendapatan">-</span>
+          </div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Stok Habis</span>
+            <span class="stat-value" id="stat-habis">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dash-card">
+          <h3>Produk Terlaris</h3>
+          <div id="terlaris-list"><div class="loading-spinner"></div></div>
+        </div>
+        <div class="dash-card">
+          <h3>Pesanan Terbaru</h3>
+          <div id="pesanan-terbaru"><div class="loading-spinner"></div></div>
+        </div>
+        <div class="dash-card wide">
+          <h3>Pendapatan 7 Hari Terakhir</h3>
+          <div id="grafik-pendapatan"><div class="loading-spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUK -->
+    <section class="admin-section" id="section-produk">
+      <div class="section-toolbar">
+        <h2>Manajemen Produk</h2>
+        <button class="btn-primary" onclick="Admin.showFormProduk()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Tambah Produk
+        </button>
+      </div>
+      <div class="table-wrapper" id="admin-produk-list">
+        <div class="loading-spinner-wrap"><div class="loading-spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- PESANAN -->
+    <section class="admin-section" id="section-pesanan">
+      <div class="section-toolbar">
+        <h2>Manajemen Pesanan</h2>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterAdminPesanan('semua', this)">Semua</button>
+          <button class="filter-tab" onclick="filterAdminPesanan('menunggu', this)">Menunggu</button>
+          <button class="filter-tab" onclick="filterAdminPesanan('diproses', this)">Diproses</button>
+          <button class="filter-tab" onclick="filterAdminPesanan('dikirim', this)">Dikirim</button>
+          <button class="filter-tab" onclick="filterAdminPesanan('selesai', this)">Selesai</button>
+        </div>
+      </div>
+      <div id="admin-pesanan-list">
+        <div class="loading-spinner-wrap"><div class="loading-spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- PENDAPATAN -->
+    <section class="admin-section" id="section-pendapatan">
+      <h2>Laporan Pendapatan</h2>
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Pendapatan Hari Ini</span>
+            <span class="stat-value small" id="pend-harian">-</span>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Pendapatan Bulan Ini</span>
+            <span class="stat-value small" id="pend-bulanan">-</span>
+          </div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Semua Pendapatan</span>
+            <span class="stat-value small" id="pend-total">-</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- end admin-content -->
+</div><!-- end admin-main -->
+
+<!-- MODAL TAMBAH/EDIT PRODUK -->
+<div class="modal-overlay" id="modal-produk">
+  <div class="modal-box modal-lg">
+    <div class="modal-header">
+      <h3 id="form-produk-title">Tambah Produk</h3>
+      <button class="modal-close" onclick="Modal.close('modal-produk')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="form-produk" onsubmit="return false">
+        <input type="hidden" id="fp-id">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="fp-nama">Nama Produk <span class="required">*</span></label>
+            <input type="text" id="fp-nama" placeholder="Contoh: Bayam Segar" required>
+          </div>
+          <div class="form-group">
+            <label for="fp-kategori">Kategori <span class="required">*</span></label>
+            <select id="fp-kategori" required>
+              <option value="">Pilih Kategori</option>
+              <option value="Sayur">Sayur</option>
+              <option value="Ikan">Ikan</option>
+              <option value="Makanan">Makanan</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fp-harga">Harga (Rp) <span class="required">*</span></label>
+            <input type="number" id="fp-harga" placeholder="5000" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="fp-stok">Stok <span class="required">*</span></label>
+            <input type="number" id="fp-stok" placeholder="50" min="0" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="fp-deskripsi">Deskripsi</label>
+          <textarea id="fp-deskripsi" rows="3" placeholder="Deskripsi produk..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Foto Produk</label>
+          <div class="upload-area" onclick="document.getElementById('fp-gambar').click()">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <p>Klik untuk upload gambar produk</p>
+            <span>JPG, PNG, WebP - Maks 5MB</span>
+          </div>
+          <input type="file" id="fp-gambar" accept="image/*" style="display:none">
+          <img id="fp-img-preview" style="display:none;max-height:160px;border-radius:8px;margin-top:8px;object-fit:contain;" alt="Preview">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" onclick="Modal.close('modal-produk')">Batal</button>
+          <button type="button" class="btn-primary" id="btn-save-produk" onclick="Admin.saveProduk()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/realtime.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Admin.init();
+  });
+
+  // Override showTab to update topbar title
+  const origShowTab = Admin.showTab.bind(Admin);
+  Admin.showTab = function(tab) {
+    origShowTab(tab);
+    const titles = { dashboard: 'Dashboard', produk: 'Manajemen Produk', pesanan: 'Manajemen Pesanan', pendapatan: 'Laporan Pendapatan' };
+    const el = document.getElementById('topbar-title');
+    if (el) el.textContent = titles[tab] || 'Admin';
+  };
+
+  function filterAdminPesanan(status, btn) {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    Admin.loadPesanan(status);
+  }
+
+  function toggleSidebar() {
+    document.getElementById('admin-sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('active');
+  }
+
+  function closeSidebarMobile() {
+    if (window.innerWidth < 1024) {
+      document.getElementById('admin-sidebar').classList.remove('open');
+      document.getElementById('sidebar-overlay').classList.remove('active');
+    }
+  }
+
+  // Notif dot for new orders
+  Realtime.listenNewOrder && setTimeout(() => {
+    Realtime.listenNewOrder((order) => {
+      const dot = document.getElementById('pesanan-notif');
+      if (dot && Admin.currentTab !== 'pesanan') dot.style.display = 'inline-block';
+    });
+  }, 2000);
+</script>
+</body>
+</html>
