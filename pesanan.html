@@ -87,7 +87,11 @@
 
     const { data, error } = await db
       .from('orders')
-      .select(`*, order_items(*, products(nama, image_url)), addresses(penerima, nomor_hp, alamat)`)
+      .select(`
+        id, total, status, catatan, created_at,
+        order_items(id, nama_produk, qty, harga_satuan, subtotal),
+        addresses(penerima, nomor_hp, alamat)
+      `)
       .eq('user_id', Auth.currentUser.id)
       .order('created_at', { ascending: false });
 
@@ -147,8 +151,9 @@
           <div class="pesanan-items">
             ${items.map(i => `
               <div class="pesanan-item">
-                <img src="${i.products?.image_url || `https://placehold.co/48x48/e8f5e9/2e7d32?text=${encodeURIComponent(i.nama_produk[0])}`}" 
-                     alt="${i.nama_produk}" class="pesanan-item-img">
+                <div class="pesanan-item-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+                </div>
                 <div class="pesanan-item-info">
                   <span>${i.nama_produk}</span>
                   <span class="pesanan-item-qty">${i.qty}x ${Fmt.currency(i.harga_satuan)}</span>
