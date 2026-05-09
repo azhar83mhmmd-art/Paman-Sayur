@@ -6,62 +6,23 @@ const Admin = {
   currentTab: 'dashboard',
 
   async init() {
-    // Tampilkan loading dulu
-    this._showLoading();
-
-    // Tunggu auth selesai (termasuk OAuth redirect callback)
+    // Guard: hanya admin
     await Auth.init();
-
-    // Jika belum login, redirect ke login
-    if (!Auth.isLoggedIn()) {
-      window.location.href = 'login.html';
-      return;
-    }
-
-    // Cek admin berdasarkan email
     if (!Auth.isAdmin()) {
       document.body.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;font-family:sans-serif;background:#f9fafb;">
+        <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;font-family:sans-serif;">
           <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <h2 style="color:#e53e3e;margin:0">Akses Ditolak</h2>
-          <p style="color:#666;margin:0">Halaman ini hanya untuk admin.</p>
-          <p style="color:#999;font-size:13px;margin:0">Login sebagai: ${Auth.currentUser?.email}</p>
-          <a href="index.html" style="color:#2e7d32;text-decoration:none;background:#e8f5e9;padding:8px 20px;border-radius:8px;">Kembali ke Beranda</a>
+          <h2 style="color:#e53e3e">Akses Ditolak</h2>
+          <p style="color:#666">Halaman ini hanya untuk admin.</p>
+          <a href="index.html" style="color:#2e7d32">Kembali ke Beranda</a>
         </div>`;
       return;
     }
 
-    // Admin terverifikasi — tampilkan panel
-    this._hideLoading();
     this.loadDashboard();
     this.loadProdukList();
     this.setupRealtimeAdmin();
     this.showTab('dashboard');
-  },
-
-  _showLoading() {
-    // Sembunyikan konten, tampilkan spinner
-    const main = document.querySelector('.admin-main');
-    const sidebar = document.querySelector('.admin-sidebar');
-    if (main) main.style.opacity = '0';
-    if (sidebar) sidebar.style.opacity = '0';
-    let loader = document.getElementById('admin-global-loader');
-    if (!loader) {
-      loader = document.createElement('div');
-      loader.id = 'admin-global-loader';
-      loader.style.cssText = 'position:fixed;inset:0;background:#f9fafb;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;';
-      loader.innerHTML = '<div style="width:40px;height:40px;border:3px solid #e8f5e9;border-top-color:#4caf50;border-radius:50%;animation:spin 0.8s linear infinite"></div><p style="color:#666;font-family:sans-serif;font-size:14px">Memverifikasi akses...</p><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
-      document.body.appendChild(loader);
-    }
-  },
-
-  _hideLoading() {
-    const loader = document.getElementById('admin-global-loader');
-    if (loader) loader.remove();
-    const main = document.querySelector('.admin-main');
-    const sidebar = document.querySelector('.admin-sidebar');
-    if (main) main.style.opacity = '1';
-    if (sidebar) sidebar.style.opacity = '1';
   },
 
   showTab(tab) {
