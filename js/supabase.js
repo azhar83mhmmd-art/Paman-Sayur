@@ -9,8 +9,8 @@
 // 3. Pergi ke Settings > API
 // 4. Copy "Project URL" dan "anon public" key
 
-const SUPABASE_URL = 'https://ysxjcgbqarkoylrdnhhm.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_qoLg-pedX4MCSOau0y5oQQ_s9-fHumS';
+const SUPABASE_URL = 'https://hweyskiymmlwrtipvqrx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Jvr-5-rUAEqYJ2HoKA0sdw_mgqymrYp';
 
 // Admin email - hanya email ini yang mendapat akses admin
 const ADMIN_EMAIL = 'azharazhar11x@gmail.com';
