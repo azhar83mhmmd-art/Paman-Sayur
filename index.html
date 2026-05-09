@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MiniSayur Market - Belanja Sayur Segar Online</title>
-  <meta name="description" content="Marketplace sayur segar dan kebutuhan dapur berkualitas, langsung dari petani.">
+  <meta name="description" content="Sayur segar, ikan, dan makanan lezat - pesan online, antar ke rumah Anda.">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,12 +16,12 @@
   <div class="nav-inner">
     <a href="index.html" class="logo">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2z" fill="#4caf50" stroke="none"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M6 12s1-4 6-4 6 4 6 4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span>Paman Sayur</span>
+      <span>MiniSayur</span>
     </a>
 
     <div class="nav-search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="search-home" placeholder="Cari sayur, ikan, makanan..." oninput="handleHomeSearch(event)">
+      <input type="text" id="search-home" placeholder="Cari sayur, bumbu, bahan dapur..." oninput="handleHomeSearch(event)">
     </div>
 
     <div class="nav-right">
@@ -58,13 +58,14 @@
 <main>
   <!-- HERO / BANNER -->
   <section class="hero">
+    <div class="hero-inner">
     <div class="hero-content">
       <div class="hero-badge">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
         Segar Setiap Hari
       </div>
       <h1>Sayur Segar<br>Langsung ke Pintu Anda</h1>
-      <p>Temukan sayur segar, ikan pilihan, dan makanan kebutuhan harian berkualitas tinggi. Pesan sekarang, antar hari ini.</p>
+      <p>Temukan sayuran segar, ikan pilihan, dan makanan lezat berkualitas tinggi. Pesan sekarang, antar hari ini.</p>
       <div class="hero-actions">
         <a href="produk.html" class="btn-hero-primary">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -109,22 +110,23 @@
         </svg>
       </div>
     </div>
+    </div><!-- end hero-inner -->
   </section>
 
   <!-- KATEGORI -->
   <section class="section-kategori">
     <div class="container">
       <h2 class="section-title">Kategori Produk</h2>
-      <div class="kategori-grid" id="home-kategori">
-        <a href="produk.html?kat=Sayur" class="kat-card">
+      <div class="kategori-grid kategori-3" id="home-kategori">
+        <a href="produk.html?kat=Sayuran" class="kat-card">
           <div class="kat-icon green">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V12M12 12C12 12 7 8 7 5a5 5 0 0110 0c0 3-5 7-5 7z"/><path d="M7 12c-2 1-4 3-4 6h18c0-3-2-5-4-6"/></svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22V12M12 12C12 12 7 8 7 5a5 5 0 0110 0c0 3-5 7-5 7z"/></svg>
           </div>
-          <span>Sayur</span>
+          <span>Sayuran</span>
         </a>
         <a href="produk.html?kat=Ikan" class="kat-card">
           <div class="kat-icon blue">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c2-5 7-8 12-8 3 0 6 1.5 8 4-2 2.5-5 4-8 4-5 0-10-3-12 0z"/><circle cx="18" cy="10" r="1" fill="currentColor"/><path d="M22 12c-1 2-2 4-4 5"/></svg>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="16" cy="12" r="2"/><path d="M22 6l-3 3M22 18l-3-3"/></svg>
           </div>
           <span>Ikan</span>
         </a>
@@ -133,12 +135,6 @@
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
           </div>
           <span>Makanan</span>
-        </a>
-        <a href="produk.html" class="kat-card">
-          <div class="kat-icon gray">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-          </div>
-          <span>Semua</span>
         </a>
       </div>
     </div>
@@ -201,9 +197,9 @@
       <div class="footer-brand">
         <div class="logo">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#4caf50"/><path d="M12 6v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          Paman Sayur
+          MiniSayur
         </div>
-        <p>Marketplace sayur segar, ikan, dan makanan berkualitas untuk keluarga Indonesia.</p>
+        <p>Sayur segar, ikan, dan makanan lezat berkualitas untuk keluarga Indonesia.</p>
       </div>
       <div class="footer-links">
         <h4>Navigasi</h4>
@@ -222,7 +218,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 Paman Sayur. Hak cipta dilindungi.</p>
+      <p>&copy; 2025 MiniSayur Market. Hak cipta dilindungi.</p>
       <a href="#" onclick="showKebijakan()">Kebijakan Layanan</a>
     </div>
   </div>
