@@ -309,69 +309,82 @@ const Admin = {
   async loadPesanan(statusFilter = 'semua') {
     const container = document.getElementById('admin-pesanan-list');
     if (!container) return;
-    container.innerHTML = '<div class="loading-spinner"></div>';
+    container.innerHTML = '<div class="loading-spinner-wrap"><div class="loading-spinner"></div></div>';
 
-    let query = db.from('orders')
-      .select(`*, addresses(*), order_items(*, products(nama, image_url)), profiles(full_name, email)`)
-      .order('created_at', { ascending: false });
+    try {
+      let query = db.from('orders')
+        .select(`
+          id, total, status, catatan, created_at, user_id,
+          addresses(penerima, nomor_hp, alamat, foto_rumah),
+          order_items(nama_produk, qty, subtotal)
+        `)
+        .order('created_at', { ascending: false });
 
-    if (statusFilter !== 'semua') query = query.eq('status', statusFilter);
+      if (statusFilter !== 'semua') query = query.eq('status', statusFilter);
 
-    const { data, error } = await query;
-    if (error) { container.innerHTML = `<p class="error-text">Error: ${error.message}</p>`; return; }
+      const { data, error } = await query;
+      if (error) throw error;
 
-    if (!data?.length) {
-      container.innerHTML = '<div class="empty-state"><p>Belum ada pesanan</p></div>';
-      return;
+      if (!data?.length) {
+        container.innerHTML = '<div class="empty-state"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><p>Belum ada pesanan</p></div>';
+        return;
+      }
+
+      container.innerHTML = data.map(o => {
+        const addr = o.addresses?.[0];
+        const items = o.order_items || [];
+        const waNum = addr?.nomor_hp ? addr.nomor_hp.replace(/^0/, '62').replace(/\D/g, '') : null;
+        return `
+          <div class="pesanan-card admin">
+            <div class="pesanan-header">
+              <div>
+                <span class="order-num">#${o.id.split('-')[0].toUpperCase()}</span>
+                <span class="order-date">${Fmt.date(o.created_at)}</span>
+              </div>
+              <select class="status-select ${Fmt.statusClass(o.status)}"
+                      onchange="Admin.updateStatus('${o.id}', this.value)">
+                <option value="menunggu"  ${o.status==='menunggu' ?'selected':''}>Menunggu</option>
+                <option value="diproses"  ${o.status==='diproses' ?'selected':''}>Diproses</option>
+                <option value="dikirim"   ${o.status==='dikirim'  ?'selected':''}>Dikirim</option>
+                <option value="selesai"   ${o.status==='selesai'  ?'selected':''}>Selesai</option>
+                <option value="dibatalkan"${o.status==='dibatalkan'?'selected':''}>Dibatalkan</option>
+              </select>
+            </div>
+            <div class="pesanan-body">
+              <div class="pesanan-buyer">
+                <strong>${addr?.penerima || 'Pelanggan'}</strong>
+                ${waNum ? `
+                <a href="https://wa.me/${waNum}" target="_blank" class="btn-wa-order">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.106.549 4.083 1.508 5.799L.057 23.625a.75.75 0 00.918.918l5.826-1.451A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.662-.524-5.172-1.434l-.372-.22-3.849.959.977-3.752-.242-.386A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                  ${addr.nomor_hp}
+                </a>` : '<span class="no-contact">Tidak ada nomor</span>'}
+                <p class="pesanan-alamat">${addr?.alamat || '-'}</p>
+                ${addr?.foto_rumah ? `
+                <a href="${addr.foto_rumah}" target="_blank" class="btn-foto">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Lihat Foto Rumah
+                </a>` : ''}
+              </div>
+              <div class="pesanan-items-list">
+                ${items.map(i => `
+                  <div class="pesanan-item-row">
+                    <span>${i.nama_produk}</span>
+                    <span>${i.qty}x</span>
+                    <span>${Fmt.currency(i.subtotal)}</span>
+                  </div>`).join('')}
+              </div>
+            </div>
+            <div class="pesanan-footer">
+              <span>Total: <strong>${Fmt.currency(o.total)}</strong></span>
+              <span class="payment-badge">COD</span>
+            </div>
+            ${o.catatan ? `<div class="pesanan-catatan"><em>Catatan: ${o.catatan}</em></div>` : ''}
+          </div>`;
+      }).join('');
+
+    } catch (err) {
+      container.innerHTML = `<p class="error-text">Kesalahan: ${err.message}</p>`;
     }
-
-    container.innerHTML = data.map(o => {
-      const addr = o.addresses?.[0];
-      const items = o.order_items || [];
-      return `
-        <div class="pesanan-card admin">
-          <div class="pesanan-header">
-            <div>
-              <span class="order-num">#${o.id.split('-')[0].toUpperCase()}</span>
-              <span class="order-date">${Fmt.date(o.created_at)}</span>
-            </div>
-            <select class="status-select ${Fmt.statusClass(o.status)}" 
-                    onchange="Admin.updateStatus('${o.id}', this.value)"
-                    data-current="${o.status}">
-              <option value="menunggu" ${o.status==='menunggu'?'selected':''}>Menunggu</option>
-              <option value="diproses" ${o.status==='diproses'?'selected':''}>Diproses</option>
-              <option value="dikirim" ${o.status==='dikirim'?'selected':''}>Dikirim</option>
-              <option value="selesai" ${o.status==='selesai'?'selected':''}>Selesai</option>
-              <option value="dibatalkan" ${o.status==='dibatalkan'?'selected':''}>Dibatalkan</option>
-            </select>
-          </div>
-          <div class="pesanan-body">
-            <div class="pesanan-buyer">
-              <strong>${addr?.penerima || o.profiles?.full_name || 'Pelanggan'}</strong>
-              <p>${addr?.nomor_hp || '-'}</p>
-              <p class="pesanan-alamat">${addr?.alamat || '-'}</p>
-              ${addr?.foto_rumah ? `<a href="${addr.foto_rumah}" target="_blank" class="btn-foto">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                Lihat Foto Rumah
-              </a>` : ''}
-            </div>
-            <div class="pesanan-items-list">
-              ${items.map(i => `
-                <div class="pesanan-item-row">
-                  <span>${i.nama_produk}</span>
-                  <span>${i.qty}x</span>
-                  <span>${Fmt.currency(i.subtotal)}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          <div class="pesanan-footer">
-            <span>Total: <strong>${Fmt.currency(o.total)}</strong></span>
-            <span class="payment-badge">COD</span>
-          </div>
-          ${o.catatan ? `<div class="pesanan-catatan"><em>Catatan: ${o.catatan}</em></div>` : ''}
-        </div>`;
-    }).join('');
   },
 
   async updateStatus(orderId, newStatus) {
