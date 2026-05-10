@@ -244,10 +244,11 @@ const Fmt = {
 
   statusLabel(status) {
     const labels = {
-      menunggu: 'Menunggu',
-      diproses: 'Diproses',
-      dikirim: 'Dikirim',
-      selesai: 'Selesai',
+      menunggu_konfirmasi: 'Menunggu Konfirmasi',
+      menunggu:   'Menunggu',
+      diproses:   'Diproses',
+      dikirim:    'Dikirim',
+      selesai:    'Selesai',
       dibatalkan: 'Dibatalkan',
     };
     return labels[status] || status;
@@ -255,10 +256,11 @@ const Fmt = {
 
   statusClass(status) {
     const classes = {
-      menunggu: 'status-waiting',
-      diproses: 'status-process',
-      dikirim: 'status-ship',
-      selesai: 'status-done',
+      menunggu_konfirmasi: 'status-konfirmasi',
+      menunggu:   'status-waiting',
+      diproses:   'status-process',
+      dikirim:    'status-ship',
+      selesai:    'status-done',
       dibatalkan: 'status-cancel',
     };
     return classes[status] || '';

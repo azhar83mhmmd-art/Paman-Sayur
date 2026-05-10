@@ -321,6 +321,7 @@ const Admin = {
       let query = db.from('orders')
         .select(`
           id, total, status, catatan, created_at, user_id,
+          payment_method, bukti_transfer,
           addresses(penerima, nomor_hp, alamat, foto_rumah),
           order_items(nama_produk, qty, subtotal)
         `)
@@ -349,6 +350,7 @@ const Admin = {
               </div>
               <select class="status-select ${Fmt.statusClass(o.status)}"
                       onchange="Admin.updateStatus('${o.id}', this.value)">
+                <option value="menunggu_konfirmasi" ${o.status==='menunggu_konfirmasi'?'selected':''}>Menunggu Konfirmasi</option>
                 <option value="menunggu"  ${o.status==='menunggu' ?'selected':''}>Menunggu</option>
                 <option value="diproses"  ${o.status==='diproses' ?'selected':''}>Diproses</option>
                 <option value="dikirim"   ${o.status==='dikirim'  ?'selected':''}>Dikirim</option>
@@ -359,6 +361,9 @@ const Admin = {
             <div class="pesanan-body">
               <div class="pesanan-buyer">
                 <strong>${addr?.penerima || 'Pelanggan'}</strong>
+                <span class="payment-method-badge ${o.payment_method === 'transfer' ? 'transfer' : 'cod'}">
+                  ${o.payment_method === 'transfer' ? 'Transfer Dana' : 'COD'}
+                </span>
                 ${waNum ? `
                 <a href="https://wa.me/${waNum}" target="_blank" class="btn-wa-order">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.106.549 4.083 1.508 5.799L.057 23.625a.75.75 0 00.918.918l5.826-1.451A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.662-.524-5.172-1.434l-.372-.22-3.849.959.977-3.752-.242-.386A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
@@ -368,8 +373,22 @@ const Admin = {
                 ${addr?.foto_rumah ? `
                 <a href="${addr.foto_rumah}" target="_blank" class="btn-foto">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  Lihat Foto Rumah
+                  Foto Rumah
                 </a>` : ''}
+                ${o.payment_method === 'transfer' && o.bukti_transfer ? `
+                <div class="bukti-transfer-admin">
+                  <a href="${o.bukti_transfer}" target="_blank" class="btn-lihat-bukti-admin">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Lihat Bukti Transfer
+                  </a>
+                  ${o.status === 'menunggu_konfirmasi' ? `
+                  <button class="btn-approve-transfer" onclick="Admin.approvePembayaran('${o.id}')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Setujui Pembayaran
+                  </button>` : ''}
+                </div>` : ''}
+                ${o.payment_method === 'transfer' && !o.bukti_transfer ? `
+                <span class="no-bukti">Belum ada bukti transfer</span>` : ''}
               </div>
               <div class="pesanan-items-list">
                 ${items.map(i => `
@@ -391,6 +410,26 @@ const Admin = {
     } catch (err) {
       container.innerHTML = `<p class="error-text">Kesalahan: ${err.message}</p>`;
     }
+  },
+
+  async approvePembayaran(orderId) {
+    const self = this;
+    Modal.confirm(
+      'Setujui Pembayaran',
+      'Konfirmasi bahwa pembayaran transfer sudah diterima? Status pesanan akan berubah menjadi <strong>Menunggu</strong>.',
+      async () => {
+        const { error } = await db.from('orders')
+          .update({ status: 'menunggu', payment_confirmed: true })
+          .eq('id', orderId);
+        if (error) {
+          Toast.show('Gagal konfirmasi: ' + error.message, 'error');
+        } else {
+          Toast.show('Pembayaran disetujui! Status → Menunggu', 'success');
+          self.loadPesanan();
+          self.loadDashboard();
+        }
+      }
+    );
   },
 
   async updateStatus(orderId, newStatus) {
