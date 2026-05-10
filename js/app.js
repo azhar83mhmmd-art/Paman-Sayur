@@ -178,12 +178,23 @@ const Modal = {
     const modal = document.getElementById(id);
     if (modal) {
       modal.classList.remove('active');
-      setTimeout(() => modal.remove(), 300);
+      setTimeout(() => {
+        modal.remove();
+        // Clean up callback registry
+        if (Modal._callbacks) delete Modal._callbacks[id];
+      }, 300);
     }
   },
 
   confirm(title, message, onConfirm) {
     const id = 'modal-confirm-' + Date.now();
+    // Store callback in registry to preserve closure & async
+    Modal._callbacks = Modal._callbacks || {};
+    Modal._callbacks[id] = async () => {
+      await onConfirm();
+      Modal.close(id);
+    };
+
     const overlay = document.createElement('div');
     overlay.id = id;
     overlay.className = 'modal-overlay active';
@@ -196,12 +207,16 @@ const Modal = {
           <p>${message}</p>
           <div class="modal-actions">
             <button class="btn-outline" onclick="Modal.close('${id}')">Batal</button>
-            <button class="btn-danger" onclick="(${onConfirm.toString()})(); Modal.close('${id}')">Konfirmasi</button>
+            <button class="btn-danger" id="confirm-btn-${id}">Konfirmasi</button>
           </div>
         </div>
       </div>
     `;
     document.body.appendChild(overlay);
+
+    // Attach listener directly (no inline string eval)
+    document.getElementById(`confirm-btn-${id}`)
+      .addEventListener('click', Modal._callbacks[id]);
   }
 };
 

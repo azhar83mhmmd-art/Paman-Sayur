@@ -239,15 +239,21 @@ const Admin = {
   },
 
   deleteProduk(id, nama) {
+    const self = this;
     Modal.confirm(
       'Hapus Produk',
-      `Yakin ingin menghapus "${nama}"? Tindakan ini tidak dapat dibatalkan.`,
+      `Yakin ingin menghapus "<strong>${nama}</strong>"?`,
       async () => {
-        const { error } = await db.from('products').update({ is_active: false }).eq('id', id);
-        if (error) Toast.show('Gagal menghapus: ' + error.message, 'error');
-        else {
-          Toast.show('Produk dihapus', 'success');
-          this.loadProdukList();
+        const { error } = await db
+          .from('products')
+          .update({ is_active: false })
+          .eq('id', id);
+        if (error) {
+          Toast.show('Gagal menghapus: ' + error.message, 'error');
+        } else {
+          Toast.show('Produk berhasil dihapus', 'success');
+          self.loadProdukList();
+          self.loadDashboard();
         }
       }
     );
