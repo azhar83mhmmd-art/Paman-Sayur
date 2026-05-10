@@ -2090,3 +2090,301 @@ body.dark .hero-badge { background: var(--primary-dark); }
   justify-content: center;
   flex-shrink: 0;
 }
+
+/* ============================================================
+   PAYMENT STYLES - Transfer Dana & COD
+   ============================================================ */
+
+/* Payment options grid */
+.payment-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.payment-option-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--bg-card);
+  position: relative;
+}
+
+.payment-option-card:hover { border-color: var(--primary); }
+
+.payment-option-card.selected {
+  border-color: var(--primary);
+  background: var(--green-50);
+}
+
+.payment-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cod-icon      { background: #e3f2fd; color: var(--blue); }
+.transfer-icon { background: #e8f5e9; color: var(--primary); }
+
+.payment-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.payment-card-info strong { font-size: 13px; font-weight: 700; }
+.payment-card-info span   { font-size: 11px; color: var(--text-muted); }
+
+.payment-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--border);
+  color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.payment-option-card.selected .payment-check {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Payment info boxes */
+.payment-info-box {
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 13px;
+  gap: 10px;
+  transition: var(--transition);
+}
+
+.cod-box {
+  display: flex;
+  align-items: flex-start;
+  background: var(--green-50);
+  color: var(--primary);
+  border: 1px solid var(--green-200);
+}
+
+.cod-box p { margin: 0; color: var(--primary); }
+
+.transfer-box {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+}
+
+/* Rekening info */
+.transfer-rekening {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.rekening-logo {
+  width: 44px;
+  height: 44px;
+  background: var(--green-50);
+  color: var(--primary);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.transfer-rekening > div { flex: 1; min-width: 0; }
+
+.rekening-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 2px;
+}
+
+.rekening-number {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+.rekening-name {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.btn-copy {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.btn-copy:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.transfer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 10px 12px;
+  background: #fff8e1;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+body.dark .transfer-note { background: #2d2b1a; }
+.transfer-note svg { flex-shrink: 0; color: var(--yellow); margin-top: 1px; }
+
+/* Konfirmasi banner (pesanan user) */
+.konfirmasi-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  background: #fff8e1;
+  border-bottom: 1px solid #ffe082;
+}
+
+body.dark .konfirmasi-banner { background: #2d2b1a; border-color: #4a3f00; }
+
+.konfirmasi-banner svg { color: var(--yellow); flex-shrink: 0; margin-top: 2px; }
+
+.konfirmasi-banner > div { flex: 1; min-width: 0; }
+.konfirmasi-banner strong { font-size: 13px; font-weight: 700; display: block; margin-bottom: 4px; color: var(--text); }
+.konfirmasi-banner p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5; }
+
+.btn-lihat-bukti {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.btn-lihat-bukti:hover { background: var(--primary-dark); }
+
+/* Payment method badge (pesanan list) */
+.payment-badge-sm {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.payment-badge-sm.cod      { background: #e3f2fd; color: var(--blue); }
+.payment-badge-sm.transfer { background: var(--green-50); color: var(--primary); }
+
+/* Status konfirmasi badge */
+.status-konfirmasi { background: #fff8e1; color: #f57f17; }
+
+/* Admin: bukti transfer section */
+.bukti-transfer-admin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-lihat-bukti-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--blue-light);
+  color: var(--blue);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-lihat-bukti-admin:hover { background: var(--blue); color: #fff; }
+
+.btn-approve-transfer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-approve-transfer:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+/* Payment method badge (admin) */
+.payment-method-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 4px 0 6px;
+}
+.payment-method-badge.cod      { background: #e3f2fd; color: var(--blue); }
+.payment-method-badge.transfer { background: var(--green-50); color: var(--primary); }
+
+.no-bukti {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .payment-options-grid { grid-template-columns: 1fr; }
+  .rekening-number { font-size: 18px; }
+  .konfirmasi-banner { flex-wrap: wrap; }
+  .transfer-rekening { flex-wrap: wrap; }
+}
