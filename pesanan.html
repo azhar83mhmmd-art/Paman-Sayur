@@ -43,6 +43,7 @@
   <!-- Filter status -->
   <div class="status-filter">
     <button class="chip-status active" data-status="semua" onclick="filterPesanan('semua', this)">Semua</button>
+    <button class="chip-status" data-status="menunggu_konfirmasi" onclick="filterPesanan('menunggu_konfirmasi', this)">Menunggu Konfirmasi</button>
     <button class="chip-status" data-status="menunggu" onclick="filterPesanan('menunggu', this)">Menunggu</button>
     <button class="chip-status" data-status="diproses" onclick="filterPesanan('diproses', this)">Diproses</button>
     <button class="chip-status" data-status="dikirim" onclick="filterPesanan('dikirim', this)">Dikirim</button>
@@ -89,6 +90,7 @@
       .from('orders')
       .select(`
         id, total, status, catatan, created_at,
+        payment_method, bukti_transfer,
         order_items(id, nama_produk, qty, harga_satuan, subtotal),
         addresses(penerima, nomor_hp, alamat)
       `)
@@ -120,9 +122,14 @@
     }
 
     container.innerHTML = filtered.map(order => {
-      const items = order.order_items || [];
-      const addr = order.addresses?.[0];
-      const statusSteps = ['menunggu', 'diproses', 'dikirim', 'selesai'];
+      const items   = order.order_items || [];
+      const addr    = order.addresses?.[0];
+      const isTransfer = order.payment_method === 'transfer';
+
+      // Tracker steps tergantung metode pembayaran
+      const statusSteps = isTransfer
+        ? ['menunggu_konfirmasi', 'menunggu', 'diproses', 'dikirim', 'selesai']
+        : ['menunggu', 'diproses', 'dikirim', 'selesai'];
       const stepIdx = statusSteps.indexOf(order.status);
 
       return `
@@ -131,9 +138,22 @@
             <div class="order-meta">
               <span class="order-num">#${order.id.split('-')[0].toUpperCase()}</span>
               <span class="order-date">${Fmt.date(order.created_at)}</span>
+              <span class="payment-badge-sm ${isTransfer ? 'transfer' : 'cod'}">
+                ${isTransfer ? 'Transfer' : 'COD'}
+              </span>
             </div>
             <span class="status-badge ${Fmt.statusClass(order.status)}">${Fmt.statusLabel(order.status)}</span>
           </div>
+
+          ${order.status === 'menunggu_konfirmasi' ? `
+          <div class="konfirmasi-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div>
+              <strong>Menunggu Konfirmasi Admin</strong>
+              <p>Bukti transfer Anda sedang diperiksa. Pesanan akan diproses setelah admin menyetujui pembayaran.</p>
+            </div>
+            ${order.bukti_transfer ? `<a href="${order.bukti_transfer}" target="_blank" class="btn-lihat-bukti">Lihat Bukti</a>` : ''}
+          </div>` : ''}
 
           ${order.status !== 'dibatalkan' ? `
           <div class="status-tracker">
